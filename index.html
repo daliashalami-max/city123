@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>فعالية الموظفين لبداية عام 2026 - بناء الفرق | سيتي مول</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-start: #0b2447;
+      --bg-end: #19376d;
+      --card-bg: #ffffff;
+      --accent: #f6b400;
+      --accent-soft: rgba(246, 180, 0, 0.09);
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --error: #b91c1c;
+      --radius-lg: 22px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, var(--bg-start), var(--bg-end));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: var(--text-main);
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 26px 26px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset-inline-end: -60px;
+      inset-block-start: -40px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, var(--accent-soft), transparent 65%);
+    }
+
+    .header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .logo-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      max-width: 56px;
+      max-height: 56px;
+      object-fit: contain;
+    }
+
+    .titles { flex: 1; min-width: 0; }
+
+    .title-main {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .title-sub {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #f97316;
+    }
+
+    .field-label {
+      position: relative;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .input {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .input:focus {
+      border-color: var(--accent);
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(246, 180, 0, 0.3);
+    }
+
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .btn {
+      margin-top: 16px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #f6b400, #ffd54a);
+      color: #1f2933;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+      transition: transform 0.1s, box-shadow 0.1s, filter 0.15s;
+    }
+
+    .btn:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+      box-shadow: 0 13px 26px rgba(0, 0, 0, 0.22);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .hint {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .result {
+      margin-top: 18px;
+      padding: 14px 13px;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      font-size: 14px;
+      line-height: 1.7;
+      display: none;
+    }
+
+    .result.visible { display: block; }
+
+    .result.error {
+      border-color: rgba(185, 28, 28, 0.5);
+      background: #fef2f2;
+      color: var(--error);
+    }
+
+    .guest-name { font-weight: 700; }
+
+    .table-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .table-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #facc15;
+      margin-inline-start: 6px;
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 22px 18px 18px; }
+      .title-main { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="logo-wrap">
+        <!-- احفظي ملف اللوغو باسم citymall-logo.png في نفس المجلد -->
+        <img src="citymall-logo.png" alt="City Mall Logo" class="logo" />
+      </div>
+      <div class="titles">
+        <h1 class="title-main">فعالية الموظفين لبداية عام 2026</h1>
+        <p class="title-sub">بناء الفرق – سيتي مول | صفحة معرفة فريقك/طاولتك باستخدام رقم الموظف.</p>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          انطلاقة عام جديد بروح فريق واحد
+        </div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <div>
+        <label class="field-label" for="nameInput">الاسم الثلاثي</label>
+        <input id="nameInput" class="input" type="text" placeholder="اكتب اسمك كما ترغب أن يظهر في الرسالة" />
+      </div>
+
+      <div>
+        <label class="field-label" for="idInput">رقم الموظف (Employee ID)</label>
+        <input id="idInput" class="input" type="text" inputmode="numeric" placeholder="مثال: 068 أو 780" />
+        <div class="hint">يتم تحديد فريقك/طاولتك بالاعتماد على رقم الموظف فقط.</div>
+      </div>
+    </div>
+
+    <button class="btn" type="button" onclick="lookup()">اعرض طاولتي وفريقي</button>
+
+    <div id="resultBox" class="result"></div>
+
+    <div class="footer-note">
+      امسح رمز الـ QR عند مدخل الفعالية، أدخل بياناتك، وتوجّه مباشرة إلى طاولتك وابدأ عام 2026 بفريق قوي 🤝
+    </div>
+  </div>
+
+  <script>
+    // قاعدة البيانات الخاصة بالمشاركين
+    const guests = [
+      { id: "068", name: "إسلام  الهودلي", table: "أسود / Black" },
+      { id: "780", name: "محمد  الخطيب", table: "Red / أحمر" },
+      { id: "737", name: "رانيه  ابو حجله", table: "Orange / برتقالي" },
+      { id: "690", name: "حسني  النجار", table: "Blue / أزرق" },
+      { id: "897", name: "عبد الرحمن  الراعي", table: "Yellow / أصفر" },
+      { id: "357", name: "بدر  قاسم", table: "Green / أخضر" },
+      { id: "754", name: "محمد  محمد", table: "White / أبيض" },
+      { id: "827", name: "أحمد  ابو فراش", table: "Red / أحمر" },
+      { id: "936", name: "محمود  العقرباوي", table: "أسود / Black" },
+      { id: "1501", name: "إسلام  محمد", table: "أسود / Black" },
+      { id: "855", name: "سيف عاصي", table: "Red / أحمر" },
+      { id: "221", name: "فارس  أبو شحاده", table: "Orange / برتقالي" },
+      { id: "371", name: "محمد  النجار", table: "Blue / أزرق" },
+      { id: "100", name: "سامر نعفش", table: "Yellow / أصفر" },
+      { id: "078", name: "غسان الرفايعه", table: "Green / أخضر" },
+      { id: "868", name: "ماهر  البله", table: "White / أبيض" },
+      { id: "871", name: "زينه  مريزيق", table: "أسود / Black" },
+      { id: "149", name: "امين  عيسى", table: "Red / أحمر" },
+      { id: "648", name: "روحي  البقور", table: "أسود / Black" },
+      { id: "937", name: "طعمه  زيتون", table: "Red / أحمر" },
+      { id: "082", name: "احمد ر الرماضنة", table: "Orange / برتقالي" },
+      { id: "034", name: "عبدالناصر  بني طه", table: "Blue / أزرق" },
+      { id: "177", name: "عدنان  عطيات", table: "Blue / أزرق" },
+      { id: "854", name: "اياد  عبادي", table: "Yellow / أصفر" },
+      { id: "546", name: "أحمد العويمر", table: "Yellow / أصفر" },
+      { id: "853", name: "أحمد  العطيات", table: "Green / أخضر" },
+      { id: "877", name: "أسامة  عمران", table: "Green / أخضر" },
+      { id: "381", name: "سمير  المواس", table: "White / أبيض" },
+      { id: "719", name: "عبد الرحيم  القطاونه", table: "White / أبيض" },
+      { id: "914", name: "عمر جابريه", table: "Orange / برتقالي" },
+      { id: "941", name: "فراس جعافره", table: "Orange / برتقالي" },
+      { id: "794", name: "قصي  الكراسنة", table: "Green / أخضر" },
+      { id: "571", name: "ماجد الرحاحله", table: "Blue / أزرق" },
+      { id: "849", name: "محمد  الحديدي", table: "أسود / Black" },
+      { id: "641", name: "محمود  الحياصات", table: "أسود / Black" },
+      { id: "119", name: "نائل  مفضي", table: "Red / أحمر" },
+      { id: "807", name: "نبيل الخوالدة", table: "Red / أحمر" },
+      { id: "110", name: "شادي  الزيود", table: "Orange / برتقالي" },
+      { id: "585", name: "مهند  عبد الوهاب", table: "Orange / برتقالي" },
+      { id: "739", name: "خلدون  حسن", table: "Blue / أزرق" },
+      { id: "836", name: "أحمد ي السويطي", table: "Yellow / أصفر" },
+      { id: "951", name: "ميشيل  المدانات", table: "Orange / برتقالي" },
+      { id: "165", name: "زيد الشطي", table: "White / أبيض" },
+      { id: "552", name: "عواد  الفواعير", table: "Yellow / أصفر" },
+      { id: "692", name: "أحمد العدره", table: "Yellow / أصفر" },
+      { id: "892", name: "محمد  المناصير", table: "أسود / Black" },
+      { id: "925", name: "مرادالمحاسنة", table: "أسود / Black" },
+      { id: "572", name: "عماد  تادرس", table: "Red / أحمر" },
+      { id: "464", name: "عمران د العربيات", table: "Green / أخضر" },
+      { id: "072", name: "محمد  العطيات", table: "White / أبيض" },
+      { id: "900", name: "روان  غيث", table: "Yellow / أصفر" },
+      { id: "953", name: "عمر  حماد", table: "Yellow / أصفر" },
+      { id: "135", name: "هبه المصري", table: "Red / أحمر" },
+      { id: "708", name: "هبة  الأعرج", table: "Blue / أزرق" },
+      { id: "757", name: "رند  العبداللات", table: "Green / أخضر" },
+      { id: "921", name: "جنه  سلامه", table: "Orange / برتقالي" },
+      { id: "880", name: "عمر داغر", table: "White / أبيض" },
+      { id: "946", name: "ريف  الهباهبه", table: "White / أبيض" },
+      { id: "840", name: "زيد  حداد", table: "Blue / أزرق" },
+      { id: "844", name: "إحسان الورنه لي", table: "Blue / أزرق" },
+      { id: "810", name: "رعد  الجواميس", table: "Green / أخضر" },
+      { id: "820", name: "زينه  الطاهر", table: "Blue / أزرق" },
+      { id: "909", name: "رعد  بجانتحله", table: "White / أبيض" },
+      { id: "888", name: "محمود  ابو سماحة", table: "Green / أخضر" },
+      { id: "902", name: "معتز  اخميس", table: "White / أبيض" }
+    ];
+
+    function saveRegistration(id, displayName) {
+      const key = "cm2026_registrations";
+      const raw = localStorage.getItem(key);
+      let list = [];
+      try {
+        list = raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        list = [];
+      }
+      const normalizedId = String(id).trim();
+      const exists = list.some(r => String(r.id).trim() === normalizedId);
+      if (!exists) {
+        list.push({
+          id: normalizedId,
+          nameEntered: displayName,
+          time: new Date().toISOString()
+        });
+        localStorage.setItem(key, JSON.stringify(list));
+      }
+    }
+
+    function lookup() {
+      const inputName = document.getElementById("nameInput").value.trim();
+      const inputId = document.getElementById("idInput").value.trim();
+      const resultBox = document.getElementById("resultBox");
+
+      if (!inputName || !inputId) {
+        resultBox.className = "result visible error";
+        resultBox.textContent = "رجاءً أدخل الاسم ورقم الموظف لإظهار طاولتك.";
+        return;
+      }
+
+      const match = guests.find(g =>
+        String(g.id).trim() === String(inputId).trim()
+      );
+
+      if (!match) {
+        resultBox.className = "result visible error";
+        resultBox.textContent = "لم يتم العثور على رقم الموظف هذا في قائمة المشاركين. يرجى مراجعة فريق التنظيم.";
+        return;
+      }
+
+      // حفظ التسجيل في LocalStorage
+      saveRegistration(inputId, inputName);
+
+      resultBox.className = "result visible";
+      resultBox.innerHTML = `
+        أهلاً بك يا <span class="guest-name">${inputName}</span> 👋<br>
+        يسعدنا انضمامك إلى فعالية الموظفين لبداية عام 2026 في سيتي مول.<br><br>
+        <span>فريقك / طاولتك هو:</span>
+        <div class="table-tag">
+          <span class="table-color-dot"></span>
+          ${match.table}
+        </div>
+        <br><br>
+        ستجد باجّك على الطاولة المخصّصة لك، لا تتردد بالتعرّف على أعضاء فريقك والانطلاق في التحديات 🎯
+      `;
+    }
+  </script>
+</body>
+</html>

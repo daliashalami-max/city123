@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة المتابعة - سيتي مول 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b2447;
+      color: #f9fafb;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #cbd5f5;
+      margin-bottom: 18px;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      flex: 1 1 180px;
+      background: #111827;
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px solid #1f2937;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .two-columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .panel {
+      flex: 1 1 320px;
+      background: #111827;
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid #1f2937;
+    }
+
+    .panel h2 {
+      font-size: 15px;
+      margin: 0 0 8px;
+    }
+
+    .panel small {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #1f2937;
+      padding: 4px 6px;
+      text-align: right;
+    }
+
+    th {
+      background: #1f2937;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td {
+      background: #020617;
+    }
+
+    tr:nth-child(odd) td {
+      background: #020617ee;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: #facc15;
+      color: #111827;
+    }
+
+    .btn-clear {
+      margin-top: 10px;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #b91c1c;
+      background: transparent;
+      color: #fecaca;
+      cursor: pointer;
+    }
+
+    .btn-clear:hover {
+      background: #7f1d1d;
+    }
+
+    @media (max-width: 768px) {
+      .two-columns { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>لوحة متابعة التسجيل - فعالية الموظفين 2026</h1>
+    <div class="subtitle">
+      تعرض هذه الصفحة من سجّل الدخول عبر صفحة المشاركين على هذا المتصفح، وتبيّن من لم يسجّل بعد من قائمة الداتا بي.
+    </div>
+
+    <div class="cards">
+      <div class="stat-card">
+        <div class="stat-label">إجمالي المشاركين في الداتا بي</div>
+        <div class="stat-value" id="totalGuests">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">عدد المسجِّلين (على هذا المتصفح)</div>
+        <div class="stat-value" id="totalRegistered">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">من لم يسجّل بعد</div>
+        <div class="stat-value" id="totalNotRegistered">-</div>
+      </div>
+    </div>
+
+    <div class="two-columns">
+      <div class="panel">
+        <h2>المسجّلون</h2>
+        <small>الأسماء التي ضغطت "اعرض طاولتي وفريقي" على هذا المتصفح.</small>
+        <table id="registeredTable">
+          <thead>
+            <tr>
+              <th>رقم الموظف</th>
+              <th>الاسم (من الداتا بي)</th>
+              <th>الاسم المدخَل</th>
+              <th>الطاولة</th>
+              <th>الوقت</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <button class="btn-clear" onclick="clearRegistrations()">
+          مسح سجل هذا المتصفح (Reset)
+        </button>
+      </div>
+
+      <div class="panel">
+        <h2>غير المسجّلين</h2>
+        <small>أسماء من الداتا بي لم يظهر لهم تسجيل على هذا المتصفح.</small>
+        <table id="notRegisteredTable">
+          <thead>
+            <tr>
+              <th>رقم الموظف</th>
+              <th>الاسم</th>
+              <th>الطاولة</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // نفس الداتا بي الموجودة في index.html
+    const guests = [
+      { id: "068", name: "إسلام  الهودلي", table: "أسود / Black" },
+      { id: "780", name: "محمد  الخطيب", table: "Red / أحمر" },
+      { id: "737", name: "رانيه  ابو حجله", table: "Orange / برتقالي" },
+      { id: "690", name: "حسني  النجار", table: "Blue / أزرق" },
+      { id: "897", name: "عبد الرحمن  الراعي", table: "Yellow / أصفر" },
+      { id: "357", name: "بدر  قاسم", table: "Green / أخضر" },
+      { id: "754", name: "محمد  محمد", table: "White / أبيض" },
+      { id: "827", name: "أحمد  ابو فراش", table: "Red / أحمر" },
+      { id: "936", name: "محمود  العقرباوي", table: "أسود / Black" },
+      { id: "1501", name: "إسلام  محمد", table: "أسود / Black" },
+      { id: "855", name: "سيف عاصي", table: "Red / أحمر" },
+      { id: "221", name: "فارس  أبو شحاده", table: "Orange / برتقالي" },
+      { id: "371", name: "محمد  النجار", table: "Blue / أزرق" },
+      { id: "100", name: "سامر نعفش", table: "Yellow / أصفر" },
+      { id: "078", name: "غسان الرفايعه", table: "Green / أخضر" },
+      { id: "868", name: "ماهر  البله", table: "White / أبيض" },
+      { id: "871", name: "زينه  مريزيق", table: "أسود / Black" },
+      { id: "149", name: "امين  عيسى", table: "Red / أحمر" },
+      { id: "648", name: "روحي  البقور", table: "أسود / Black" },
+      { id: "937", name: "طعمه  زيتون", table: "Red / أحمر" },
+      { id: "082", name: "احمد ر الرماضنة", table: "Orange / برتقالي" },
+      { id: "034", name: "عبدالناصر  بني طه", table: "Blue / أزرق" },
+      { id: "177", name: "عدنان  عطيات", table: "Blue / أزرق" },
+      { id: "854", name: "اياد  عبادي", table: "Yellow / أصفر" },
+      { id: "546", name: "أحمد العويمر", table: "Yellow / أصفر" },
+      { id: "853", name: "أحمد  العطيات", table: "Green / أخضر" },
+      { id: "877", name: "أسامة  عمران", table: "Green / أخضر" },
+      { id: "381", name: "سمير  المواس", table: "White / أبيض" },
+      { id: "719", name: "عبد الرحيم  القطاونه", table: "White / أبيض" },
+      { id: "914", name: "عمر جابريه", table: "Orange / برتقالي" },
+      { id: "941", name: "فراس جعافره", table: "Orange / برتقالي" },
+      { id: "794", name: "قصي  الكراسنة", table: "Green / أخضر" },
+      { id: "571", name: "ماجد الرحاحله", table: "Blue / أزرق" },
+      { id: "849", name: "محمد  الحديدي", table: "أسود / Black" },
+      { id: "641", name: "محمود  الحياصات", table: "أسود / Black" },
+      { id: "119", name: "نائل  مفضي", table: "Red / أحمر" },
+      { id: "807", name: "نبيل الخوالدة", table: "Red / أحمر" },
+      { id: "110", name: "شادي  الزيود", table: "Orange / برتقالي" },
+      { id: "585", name: "مهند  عبد الوهاب", table: "Orange / برتقالي" },
+      { id: "739", name: "خلدون  حسن", table: "Blue / أزرق" },
+      { id: "836", name: "أحمد ي السويطي", table: "Yellow / أصفر" },
+      { id: "951", name: "ميشيل  المدانات", table: "Orange / برتقالي" },
+      { id: "165", name: "زيد الشطي", table: "White / أبيض" },
+      { id: "552", name: "عواد  الفواعير", table: "Yellow / أصفر" },
+      { id: "692", name: "أحمد العدره", table: "Yellow / أصفر" },
+      { id: "892", name: "محمد  المناصير", table: "أسود / Black" },
+      { id: "925", name: "مرادالمحاسنة", table: "أسود / Black" },
+      { id: "572", name: "عماد  تادرس", table: "Red / أحمر" },
+      { id: "464", name: "عمران د العربيات", table: "Green / أخضر" },
+      { id: "072", name: "محمد  العطيات", table: "White / أبيض" },
+      { id: "900", name: "روان  غيث", table: "Yellow / أصفر" },
+      { id: "953", name: "عمر  حماد", table: "Yellow / أصفر" },
+      { id: "135", name: "هبه المصري", table: "Red / أحمر" },
+      { id: "708", name: "هبة  الأعرج", table: "Blue / أزرق" },
+      { id: "757", name: "رند  العبداللات", table: "Green / أخضر" },
+      { id: "921", name: "جنه  سلامه", table: "Orange / برتقالي" },
+      { id: "880", name: "عمر داغر", table: "White / أبيض" },
+      { id: "946", name: "ريف  الهباهبه", table: "White / أبيض" },
+      { id: "840", name: "زيد  حداد", table: "Blue / أزرق" },
+      { id: "844", name: "إحسان الورنه لي", table: "Blue / أزرق" },
+      { id: "810", name: "رعد  الجواميس", table: "Green / أخضر" },
+      { id: "820", name: "زينه  الطاهر", table: "Blue / أزرق" },
+      { id: "909", name: "رعد  بجانتحله", table: "White / أبيض" },
+      { id: "888", name: "محمود  ابو سماحة", table: "Green / أخضر" },
+      { id: "902", name: "معتز  اخميس", table: "White / أبيض" }
+    ];
+
+    function getRegistrations() {
+      const key = "cm2026_registrations";
+      const raw = localStorage.getItem(key);
+      try {
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function clearRegistrations() {
+      if (confirm("هل أنت متأكد من مسح سجل هذا المتصفح؟")) {
+        localStorage.removeItem("cm2026_registrations");
+        location.reload();
+      }
+    }
+
+    function render() {
+      const regs = getRegistrations();
+      const totalGuests = guests.length;
+      const registeredIds = new Set(regs.map(r => String(r.id).trim()));
+
+      document.getElementById("totalGuests").textContent = totalGuests;
+      document.getElementById("totalRegistered").textContent = registeredIds.size;
+      document.getElementById("totalNotRegistered").textContent = totalGuests - registeredIds.size;
+
+      const regBody = document.querySelector("#registeredTable tbody");
+      const notBody = document.querySelector("#notRegisteredTable tbody");
+      regBody.innerHTML = "";
+      notBody.innerHTML = "";
+
+      // جدول المسجّلين
+      regs.forEach(r => {
+        const idNorm = String(r.id).trim();
+        const guest = guests.find(g => String(g.id).trim() === idNorm);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${idNorm}</td>
+          <td>${guest ? guest.name : "-"}</td>
+          <td>${r.nameEntered || "-"}</td>
+          <td>${guest ? guest.table : "-"}</td>
+          <td>${r.time ? new Date(r.time).toLocaleString("ar-JO") : "-"}</td>
+        `;
+        regBody.appendChild(tr);
+      });
+
+      // جدول غير المسجّلين
+      guests
+        .filter(g => !registeredIds.has(String(g.id).trim()))
+        .forEach(g => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${g.id}</td>
+            <td>${g.name}</td>
+            <td>${g.table}</td>
+          `;
+          notBody.appendChild(tr);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", render);
+  </script>
+</body>
+</html>
